@@ -1,0 +1,18 @@
+{
+  "name": "teach-hdwallet",
+  "version": "1.0.0",
+  "description": "Teaching aid for @shapeshiftoss/hdwallet",
+  "main": "index.js",
+  "author": "keepkeyjon <jon@keepkey.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "mdx-deck": "^3.0.9"
+  },
+  "scripts": {
+    "start": "mdx-deck hardware-wallets-and-the-web.mdx"
+  },
+  "dependencies": {
+    "@mdx-deck/themes": "^3.0.8"
+  }
+}

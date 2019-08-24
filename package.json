@@ -13,6 +13,7 @@
     "start": "mdx-deck hardware-wallets-and-the-web.mdx"
   },
   "dependencies": {
-    "@mdx-deck/themes": "^3.0.8"
+    "@mdx-deck/themes": "^3.0.8",
+    "qrcode.react": "^0.9.3"
   }
 }

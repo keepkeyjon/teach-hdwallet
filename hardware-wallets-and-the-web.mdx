@@ -129,7 +129,6 @@ github.com/shapeshift/hdwallet
     subgraph cluster_1 {
       label = "KeepKey";
       hdwalletkeepkey [label="hdwallet-keepkey", shape=box];
-      hdwalletkeepkey -> hdwalletcore;
       hdwalletkeepkeywebusb [label="hdwallet-keepkey-webusb", shape=box, fillcolor="aquamarine", style=filled];
       hdwalletkeepkeywebusb -> hdwalletkeepkey;
       hdwalletkeepkeynodewebusb [label="hdwallet-keepkey-nodewebusb", shape=box, fillcolor="darkseagreen1", style=filled];
@@ -137,22 +136,23 @@ github.com/shapeshift/hdwallet
       hdwalletkeepkeychromeusb [label="hdwallet-keepkey-chromeusb", shape=box, fillcolor="bisque", style=filled];
       hdwalletkeepkeychromeusb -> hdwalletkeepkey;
     }
+    hdwalletkeepkey -> hdwalletcore;
     subgraph cluster_2 {
       label = "Trezor"
       hdwallettrezor [label="hdwallet-trezor", shape=box];
-      hdwallettrezor -> hdwalletcore;
       hdwallettrezorconnect [label="hdwallet-trezor-connect", shape=box, fillcolor="aquamarine", style=filled];
       hdwallettrezorconnect -> hdwallettrezor;
     }
+    hdwallettrezor -> hdwalletcore;
     subgraph cluster_3 {
       label = "Ledger";
       hdwalletledger [label="hdwallet-ledger", shape=box];
-      hdwalletledger -> hdwalletcore;
       hdwalletledgerwebusb [label="hdwallet-ledger-webusb", shape=box, fillcolor="aquamarine", style=filled];
       hdwalletledgerwebusb -> hdwalletledger;
       hdwalletledgeru2f [label="hdwallet-ledger-u2f", shape=box, fillcolor="aquamarine", style=filled];
       hdwalletledgeru2f -> hdwalletledger;
     }
+    hdwalletledger -> hdwalletcore;
   }
 `} />
 

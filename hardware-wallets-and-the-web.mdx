@@ -1,5 +1,7 @@
-import { Image } from 'mdx-deck'
+import { Graphviz } from 'graphviz-react'
+import QRCode from 'qrcode.react'
 
+import { Image } from 'mdx-deck'
 import { future } from '@mdx-deck/themes'
 export const theme = future
 
@@ -19,8 +21,6 @@ export const theme = future
 * Follow along
 
 ----
-
-import QRCode from 'qrcode.react'
 
 ## Follow Along
 
@@ -73,24 +73,103 @@ Arrow keys to navigate.
 
 ----
 
-### Key Storage
+### Problem
 
-* Secure Element
-  * Ledger Nano S
-  * Ledger Nano X
+<Graphviz dot={`
+  digraph D {
+    "Wallet A" -> "Ledger";
+    "Wallet C" -> "Ledger";
+    "Wallet B" -> "Ledger";
+    "Wallet B" -> "Trezor";
+    "Wallet C" -> "Trezor";
+    "Wallet D" -> "KeepKey";
+  }
+`} />
 
-* Open Source, No S.E.
-  * KeepKey
-  * Trezor One
-  * Trezor T
+<Notes>
+- Every vendor has their own libraries
+- Fragmented wallet support
+</Notes>
 
 ----
 
-### Host Communications
+### Solution
 
-* WebUSB / HID
-* Bridge
-* Bluetooth
+<Graphviz dot={`
+  digraph D {
+    "Wallet A" -> "Common API";
+    "Wallet B" -> "Common API";
+    "Wallet C" -> "Common API";
+    "Common API" -> "Ledger";
+    "Common API" -> "Trezor";
+    "Common API" -> "KeepKey";
+  }
+`} />
+
+<Notes>
+- Unified api
+</Notes>
+
+----
+
+### Solution
+
+github.com/shapeshift/hdwallet
+
+----
+
+### Architecture
+
+<Split>
+
+<Graphviz dot={`
+  digraph D {
+    rankdir="LR";
+    hdwalletcore [label="hdwallet-core", shape=box];
+    subgraph cluster_1 {
+      label = "KeepKey";
+      hdwalletkeepkey [label="hdwallet-keepkey", shape=box];
+      hdwalletkeepkey -> hdwalletcore;
+      hdwalletkeepkeywebusb [label="hdwallet-keepkey-webusb", shape=box, fillcolor="aquamarine", style=filled];
+      hdwalletkeepkeywebusb -> hdwalletkeepkey;
+      hdwalletkeepkeynodewebusb [label="hdwallet-keepkey-nodewebusb", shape=box, fillcolor="darkseagreen1", style=filled];
+      hdwalletkeepkeynodewebusb -> hdwalletkeepkey;
+      hdwalletkeepkeychromeusb [label="hdwallet-keepkey-chromeusb", shape=box, fillcolor="bisque", style=filled];
+      hdwalletkeepkeychromeusb -> hdwalletkeepkey;
+    }
+    subgraph cluster_2 {
+      label = "Trezor"
+      hdwallettrezor [label="hdwallet-trezor", shape=box];
+      hdwallettrezor -> hdwalletcore;
+      hdwallettrezorconnect [label="hdwallet-trezor-connect", shape=box, fillcolor="aquamarine", style=filled];
+      hdwallettrezorconnect -> hdwallettrezor;
+    }
+    subgraph cluster_3 {
+      label = "Ledger";
+      hdwalletledger [label="hdwallet-ledger", shape=box];
+      hdwalletledger -> hdwalletcore;
+      hdwalletledgerwebusb [label="hdwallet-ledger-webusb", shape=box, fillcolor="aquamarine", style=filled];
+      hdwalletledgerwebusb -> hdwalletledger;
+      hdwalletledgeru2f [label="hdwallet-ledger-u2f", shape=box, fillcolor="aquamarine", style=filled];
+      hdwalletledgeru2f -> hdwalletledger;
+    }
+  }
+`} />
+
+<Graphviz dot={`
+  digraph D {
+    rankdir="LR";
+    subgraph cluster_0 {
+      label = "Legend";
+      package [label="package", shape=box];
+      webpackage [label="web package", shape=box, fillcolor="aquamarine", style=filled];
+      nodepackage [label="node package", shape=box, fillcolor="darkseagreen1", style=filled];
+      chromepackage [label="chrome package", shape=box, fillcolor="bisque", style=filled];
+    }
+  }
+`} />
+
+</Split>
 
 ----
 

@@ -91,6 +91,10 @@ export class Wallet extends React.Component {
         </Button>
         <br/>
         <br/>
+        <div hidden={this.state.address}>
+          <h4>Implement 'Show Address'</h4>
+          <p>Use the <code>TODO</code> hints in <code>Wallet.tsx</code></p>
+        </div>
         <div hidden={!this.state.address}>
           <QRCode value={this.state.address} size={128} includeMargin="true" />
           <br/>

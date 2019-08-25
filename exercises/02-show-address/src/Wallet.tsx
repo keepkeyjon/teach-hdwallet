@@ -42,6 +42,7 @@ export class Wallet extends React.Component {
 
     // Simplification: only support the empty passphrase wallet
     this.keyring.on(["*", "*", Events.PASSPHRASE_REQUEST], m => {
+      // ... by sending the empty passphrase when asked for one.
       this.state.wallet.sendPassphrase("");
     });
 

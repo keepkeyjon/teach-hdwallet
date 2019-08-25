@@ -53,6 +53,8 @@ export class Wallet extends React.Component {
       return;
     }
 
+    let wallet = this.state.wallet
+
     let address = "Implement Me!";
 
     // TODO: fetch supported paths from ethGetAccountPaths

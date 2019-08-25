@@ -49,6 +49,7 @@ export class Wallet extends React.Component {
         <button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
         </button>
+        <div hidden={!this.state.wallet}><h2>Paired! ✅</h2></div>
       </>
     );
   }

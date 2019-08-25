@@ -245,12 +245,10 @@ Coinomi | `m/44'/60'/x'/0`
   - Ask HDWallet!
 
 ```javascript
-if (supportsETH(wallet)) {
-  console.log(wallet.ethGetAccountPaths({
-    coin: 'Ethereum',
-    accountIdx: 1
-  }))
-}
+wallet.ethGetAccountPaths({
+  coin: 'Ethereum',
+  accountIdx: 1
+})
 ```
 
 ----
@@ -260,17 +258,14 @@ if (supportsETH(wallet)) {
 `['🐓','🥚'].sort()`
 
 ```javascript
-let address
-if (supportsETH(wallet)) {
-  let addressNList =
-    bip32ToAddressNList(`m/44'/60'/0'/0/0`)
-  address = await wallet.ethGetAddress({
-    coin: 'Ethereum',
-    addressNList,
-    showDisplay: true
-    address: ???
-  })
-}
+let addressNList =
+  bip32ToAddressNList(`m/44'/60'/0'/0/0`)
+let address = await wallet.ethGetAddress({
+  coin: 'Ethereum',
+  addressNList,
+  showDisplay: true
+  address: ???
+})
 ```
 
 <Notes>
@@ -288,16 +283,18 @@ we can show it on the display.
 Solution: Ask twice!
 
 ```javascript
-let address
-if (supportsETH(wallet)) {
-  let addressNList =
-    bip32ToAddressNList(`m/44'/60'/0'/0/0`)
-  let msg = { coin: 'Ethereum', addressNList }
-  address = await wallet.ethGetAddress(msg)
-  renderQRCode(address)
-  address = await wallet.ethGetAddress({
-    showDisplay: true, address, ...msg })
-}
+let addressNList =
+  bip32ToAddressNList(`m/44'/60'/0'/0/0`)
+
+address = await wallet.ethGetAddress({
+  coin: 'Ethereum', addressNList,
+  showDisplay: false, ...msg })
+
+renderQRCode(address)
+
+address = await wallet.ethGetAddress({
+  coin: 'Ethereum', addressNList,
+  showDisplay: true, address, ...msg })
 ```
 
 ----

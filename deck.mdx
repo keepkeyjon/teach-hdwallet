@@ -1,10 +1,10 @@
 import { Graphviz } from 'graphviz-react'
 import QRCode from 'qrcode.react'
-import Highlighter from 'react-syntax-highlighter'
 
 import { Image } from 'mdx-deck'
-import { future } from '@mdx-deck/themes'
-export const theme = future
+
+import customTheme from './theme'
+export const theme = customTheme
 
 ### Hardware Wallets and the Web
 
@@ -38,7 +38,8 @@ export const theme = future
 - KeepKey, v6.1.0+
 - Chrome or Brave
 - Node.js 10+
-- [These slides!](https://github.com/keepkeyjon/teach-hdwallet)
+- These slides!
+  - https://github.com/keepkeyjon/teach-hdwallet
 
 </Horizontal>
 
@@ -189,10 +190,12 @@ github.com/shapeshift/hdwallet
 ### Lesson: Feature Tests
 
 ```javascript
+// ETH / ETC / Ropsten / Kovan / etc.
 if (supportsETH(wallet)) {
   addr = await wallet.ethGetAddress({ ... })
 }
 
+// Bitcoin / Litecoin / Dash / Doge / etc.
 if (supportsBTC(wallet)) {
   addr = await wallet.btcGetAddress({ ... })
 }
@@ -202,9 +205,19 @@ if (supportsBTC(wallet)) {
 
 ### Lesson: BIP32 Paths
 
-<Image src='https://github.com/bitcoin/bips/raw/master/bip-0032/derivation.png'>
-BIP32 derivation
-</Image>
+- Standard for *derivation paths* in HD Wallets
+- Notation
+  - `m/44'/0'/0'/0/0`
+  - `[0x8000002c, 0x80000000, 0x80000000, 0, 0]`
+- BIP44 / BIP49 / BIP84
+
+----
+
+### Lesson: BIP32 Paths
+
+- BIP44
+  - `m/44'/0'/0'/0/0`
+  - `m/purpose'/coin'/account'/change/index`
 
 ----
 

@@ -8,8 +8,6 @@ import QRCode from "qrcode-react";
 
 import PinPadModal from "./PinPadModal";
 
-import PinPadModal from "./PinPadModal";
-
 import {
   Keyring,
   supportsETH,

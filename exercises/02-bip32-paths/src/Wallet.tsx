@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as debug from "debug";
 
-import { Keyring } from "@shapeshiftoss/hdwallet-core";
+import { Keyring, supportsETH } from "@shapeshiftoss/hdwallet-core";
 import { WebUSBKeepKeyAdapter } from "@shapeshiftoss/hdwallet-keepkey-webusb";
 import { TrezorAdapter } from "@shapeshiftoss/hdwallet-trezor-connect";
 
@@ -12,7 +12,7 @@ export class Wallet extends React.Component {
   keyring;
   keepkeyAdapter;
   trezorAdapter;
-  state = { wallet: undefined };
+  state = { wallet: undefined, paths: undefined };
 
   constructor(props) {
     super(props);
@@ -37,6 +37,17 @@ export class Wallet extends React.Component {
 
   async handlePair(adapter) {
     let wallet = await adapter.pairDevice();
+
+    if (supportsETH(wallet)) {
+      let paths = JSON.stringify(
+        wallet.ethGetAccountPaths({
+           coin: 'Ethereum',
+           accountIdx: 1
+         }), null, 2)
+
+      this.setState({ paths })
+    }
+
     this.setState({ wallet });
   }
 
@@ -49,7 +60,8 @@ export class Wallet extends React.Component {
         <button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
         </button>
-        <div hidden={!this.state.wallet}><h2>Paired! ✅</h2></div>
+        <br/><br/>
+        <div hidden={!this.state.paths}>{this.state.paths}</div>
       </>
     );
   }

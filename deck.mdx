@@ -255,11 +255,58 @@ if (supportsETH(wallet)) {
 
 ----
 
-### Exercise 2: BIP32 Paths
+### Lesson: Show an Address
+
+`['🐓','🥚'].sort()`
+
+```javascript
+let address
+if (supportsETH(wallet)) {
+  let addressNList =
+    bip32ToAddressNList(`m/44'/60'/0'/0/0`)
+  address = await wallet.ethGetAddress({
+    coin: 'Ethereum',
+    addressNList,
+    showDisplay: true
+    address: ???
+  })
+}
+```
+
+<Notes>
+TrezorConnect api requires that we provide the address that we are expecting
+that the user see when it is shown on their device.
+
+This prevents surprises, but it also means we need to have the address before
+we can show it on the display.
+</Notes>
+
+----
+
+### Lesson: Show an Address
+
+Solution: Ask twice!
+
+```javascript
+let address
+if (supportsETH(wallet)) {
+  let addressNList =
+    bip32ToAddressNList(`m/44'/60'/0'/0/0`)
+  let msg = { coin: 'Ethereum', addressNList }
+  address = await wallet.ethGetAddress(msg)
+  renderQRCode(address)
+  address = await wallet.ethGetAddress({
+    showDisplay: true, address, ...msg })
+}
+```
+
+----
+
+### Exercise 2: Show Address
 
 <iframe
-  src="https://codesandbox.io/embed/github/keepkeyjon/teach-hdwallet/tree/master/exercises/02-bip32-paths?autoresize=1&expanddevtools=1&fontsize=10&module=%2Fsrc%2FWallet.tsx"
-  title="BIP32 Paths"
+  src="https://codesandbox.io/embed/github/keepkeyjon/teach-hdwallet/tree/master/exercises/02-show-address?autoresize=1&expanddevtools=1&fontsize=10&module=%2Fsrc%2FWallet.tsx"
+  title="Show Address"
   allow="usb"
   style="width:100%; height:850px; border:0; border-radius: 4px; overflow:hidden;"
   sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin">

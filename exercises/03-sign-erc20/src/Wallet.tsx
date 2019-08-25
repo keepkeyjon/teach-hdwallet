@@ -6,7 +6,16 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import QRCode from "qrcode-react";
 
-import { Keyring, supportsETH } from "@shapeshiftoss/hdwallet-core";
+import PinPadModal from "./PinPadModal";
+
+import PinPadModal from "./PinPadModal";
+
+import {
+  Keyring,
+  supportsETH,
+  Events,
+  bip32ToAddressNList,
+} from "@shapeshiftoss/hdwallet-core";
 import { WebUSBKeepKeyAdapter } from "@shapeshiftoss/hdwallet-keepkey-webusb";
 import { TrezorAdapter } from "@shapeshiftoss/hdwallet-trezor-connect";
 
@@ -19,7 +28,8 @@ export class Wallet extends React.Component {
   trezorAdapter;
   state = {
     wallet: undefined,
-    serialized: undefined
+    serialized: undefined,
+    pinOpen: false
   };
 
   constructor(props) {
@@ -32,6 +42,17 @@ export class Wallet extends React.Component {
       log((from_wallet ? "🔑" : "🖥") + " " + event.join("."), ...values);
     });
 
+    // If the wallet asks for a PIN, open the PIN modal
+    this.keyring.on(["*", "*", Events.PIN_REQUEST], m => {
+      this.setState({ pinOpen: true });
+    });
+
+    // Simplification: only support the empty passphrase wallet
+    this.keyring.on(["*", "*", Events.PASSPHRASE_REQUEST], m => {
+      // ... by sending the empty passphrase when asked for one.
+      this.state.wallet.sendPassphrase("");
+    });
+
     this.keepkeyAdapter = WebUSBKeepKeyAdapter.useKeyring(this.keyring);
 
     this.trezorAdapter = TrezorAdapter.useKeyring(this.keyring, {
@@ -41,6 +62,16 @@ export class Wallet extends React.Component {
         email: "you@example.com"
       }
     });
+  }
+
+  pinEntered(pin: string) {
+    this.setState({ pinOpen: false });
+    this.state.wallet.sendPin(pin);
+  }
+
+  async cancel() {
+    this.setState({ pinOpen: false });
+    await this.state.wallet.cancel();
   }
 
   async handlePair(adapter) {
@@ -82,19 +113,18 @@ export class Wallet extends React.Component {
         </Button>
         <br />
         <br />
-        <div hidden={this.state.serialized}>
+        <PinPadModal
+          show={this.state.pinOpen}
+          onSubmit={(pin: string) => this.pinEntered(pin)}
+          onHide={() => this.cancel()}
+        />
+        <div hidden={this.state.address}>
           <h4>Implement 'Sign Tx'</h4>
           <p>
             Use the <code>TODO</code> hints in <code>Wallet.tsx</code>
           </p>
         </div>
         <div hidden={!this.state.serialized}>
-          <QRCode
-            value={this.state.serialized}
-            size={128}
-            includeMargin="true"
-          />
-          <br />
           <span>{this.state.serialized}</span>
         </div>
       </>

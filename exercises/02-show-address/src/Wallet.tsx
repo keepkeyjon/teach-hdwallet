@@ -1,6 +1,11 @@
 import * as React from "react";
 import * as debug from "debug";
 
+import Button from "react-bootstrap/Button";
+import "bootstrap/dist/css/bootstrap.css";
+
+import QRCode from "qrcode-react";
+
 import { Keyring, supportsETH } from "@shapeshiftoss/hdwallet-core";
 import { WebUSBKeepKeyAdapter } from "@shapeshiftoss/hdwallet-keepkey-webusb";
 import { TrezorAdapter } from "@shapeshiftoss/hdwallet-trezor-connect";
@@ -12,7 +17,10 @@ export class Wallet extends React.Component {
   keyring;
   keepkeyAdapter;
   trezorAdapter;
-  state = { wallet: undefined, paths: undefined };
+  state = {
+    wallet: undefined,
+    address: undefined
+  };
 
   constructor(props) {
     super(props);
@@ -37,31 +45,49 @@ export class Wallet extends React.Component {
 
   async handlePair(adapter) {
     let wallet = await adapter.pairDevice();
+    this.setState({ wallet });
+  }
 
-    if (supportsETH(wallet)) {
-      let paths = JSON.stringify(
-        wallet.ethGetAccountPaths({
-           coin: 'Ethereum',
-           accountIdx: 1
-         }), null, 2)
-
-      this.setState({ paths })
+  async handleShow() {
+    if (!supportsETH(this.state.wallet)) {
+      return;
     }
 
-    this.setState({ wallet });
+    let address = "Implement Me!";
+
+    // TODO: fetch supported paths from ethGetAccountPaths
+
+    // TODO: use the 0th result, and join the contained
+    // hardenedPath and relPath arrays to form an addressNList
+
+    // TODO: request the address at that path, without showing on device
+
+    // This will show the Address & QRCode in the App:
+    this.setState({ address });
+
+    // TODO: request the address again, this time showing on device
   }
 
   render() {
     return (
       <>
-        <button onClick={() => this.handlePair(this.keepkeyAdapter)}>
+        <Button onClick={() => this.handlePair(this.keepkeyAdapter)}>
           Pair KeepKey
-        </button>
-        <button onClick={() => this.handlePair(this.trezorAdapter)}>
+        </Button>
+        <Button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
-        </button>
-        <br/><br/>
-        <div hidden={!this.state.paths}>{this.state.paths}</div>
+        </Button>
+        <hr />
+        <Button disabled={!this.state.wallet} onClick={() => this.handleShow()}>
+          Show Address
+        </Button>
+        <br />
+        <br />
+        <div hidden={!this.state.address}>
+          <QRCode value={this.state.address} size={128} includeMargin="true" />
+          <br />
+          <span>{this.state.address}</span>
+        </div>
       </>
     );
   }

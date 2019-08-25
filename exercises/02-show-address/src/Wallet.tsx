@@ -6,7 +6,9 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import QRCode from "qrcode-react";
 
-import { Keyring, supportsETH } from "@shapeshiftoss/hdwallet-core";
+import PinPadModal from "./PinPadModal";
+
+import { Keyring, supportsETH, Events } from "@shapeshiftoss/hdwallet-core";
 import { WebUSBKeepKeyAdapter } from "@shapeshiftoss/hdwallet-keepkey-webusb";
 import { TrezorAdapter } from "@shapeshiftoss/hdwallet-trezor-connect";
 
@@ -19,7 +21,8 @@ export class Wallet extends React.Component {
   trezorAdapter;
   state = {
     wallet: undefined,
-    address: undefined
+    address: undefined,
+    pinOpen: false
   };
 
   constructor(props) {
@@ -30,6 +33,16 @@ export class Wallet extends React.Component {
     this.keyring.onAny((event: string[], ...values: any[]) => {
       const [[, { from_wallet = false }]] = values;
       log((from_wallet ? "🔑" : "🖥") + " " + event.join("."), ...values);
+    });
+
+    // If the wallet asks for a PIN, open the PIN modal
+    this.keyring.on(["*", "*", Events.PIN_REQUEST], m => {
+      this.setState({ pinOpen: true });
+    });
+
+    // Simplification: only support the empty passphrase wallet
+    this.keyring.on(["*", "*", Events.PASSPHRASE_REQUEST], m => {
+      this.state.wallet.sendPassphrase("");
     });
 
     this.keepkeyAdapter = WebUSBKeepKeyAdapter.useKeyring(this.keyring);
@@ -43,6 +56,16 @@ export class Wallet extends React.Component {
     });
   }
 
+  pinEntered(pin: string) {
+    this.setState({ pinOpen: false });
+    this.state.wallet.sendPin(pin);
+  }
+
+  async cancel() {
+    this.setState({ pinOpen: false });
+    await this.state.wallet.cancel();
+  }
+
   async handlePair(adapter) {
     let wallet = await adapter.pairDevice();
     this.setState({ wallet });
@@ -53,7 +76,7 @@ export class Wallet extends React.Component {
       return;
     }
 
-    let wallet = this.state.wallet
+    let wallet = this.state.wallet;
 
     try {
       let address = "Implement Me!";
@@ -69,10 +92,9 @@ export class Wallet extends React.Component {
       this.setState({ address });
 
       // TODO: request the address again, this time showing on device
-
     } catch (e) {
-      console.error(e)
-      this.setState({ address: 'Oops, something went wrong' })
+      console.error(e);
+      this.setState({ address: "Oops, something went wrong" });
     }
   }
 
@@ -85,19 +107,26 @@ export class Wallet extends React.Component {
         <Button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
         </Button>
-        <hr/>
+        <hr />
         <Button disabled={!this.state.wallet} onClick={() => this.handleShow()}>
           Show Address
         </Button>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <PinPadModal
+          show={this.state.pinOpen}
+          onSubmit={(pin: string) => this.pinEntered(pin)}
+          onHide={() => this.cancel()}
+        />
         <div hidden={this.state.address}>
           <h4>Implement 'Show Address'</h4>
-          <p>Use the <code>TODO</code> hints in <code>Wallet.tsx</code></p>
+          <p>
+            Use the <code>TODO</code> hints in <code>Wallet.tsx</code>
+          </p>
         </div>
         <div hidden={!this.state.address}>
           <QRCode value={this.state.address} size={128} includeMargin="true" />
-          <br/>
+          <br />
           <span>{this.state.address}</span>
         </div>
       </>

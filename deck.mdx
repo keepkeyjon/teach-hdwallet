@@ -167,9 +167,90 @@ github.com/shapeshift/hdwallet
   sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin">
 </iframe>
 
+<Notes>
+- Users should try pairing a KeepKey, or a Trezor
+- May run into issues with
+  - Old Firmware
+  - Old Trezor Bridge versions
+  - Browsers without WebUSB support
+</Notes>
+
 ----
 
-### Lesson
+### Lesson: Feature Tests
+
+- Coin support varies
+  - Devices
+  - Firmware Versions
+- Support common subset 
+
+----
+
+### Lesson: Feature Tests
+
+```javascript
+if (supportsETH(wallet)) {
+  addr = await wallet.ethGetAddress({ ... })
+}
+
+if (supportsBTC(wallet)) {
+  addr = await wallet.btcGetAddress({ ... })
+}
+```
+
+----
+
+### Lesson: BIP32 Paths
+
+<Image src='https://github.com/bitcoin/bips/raw/master/bip-0032/derivation.png'>
+BIP32 derivation
+</Image>
+
+----
+
+### Lesson: BIP32 Paths
+
+- Problem
+  - No clear standard for ETH
+  - Every wallet does it differently
+
+<br/>
+
+Vendor | Path
+-------|-------
+KeepKey | `m/44'/60'/x'/0/0`
+Trezor | `m/44'/60'/0'/0/x`
+Ledger | `m/44'/60'/0'/x`
+Ledger | `m/44'/60'/x'/0/0`
+Coinomi | `m/44'/60'/x'/0`
+
+----
+
+### Lesson: BIP32 Paths
+
+- Solution
+  - Ask HDWallet!
+
+```javascript
+if (supportsETH(wallet)) {
+  console.log(wallet.ethGetAccountPaths({
+    coin: 'Ethereum',
+    accountIdx: 1
+  }))
+}
+```
+
+----
+
+### Exercise 2: BIP32 Paths
+
+<iframe
+  src="https://codesandbox.io/embed/github/keepkeyjon/teach-hdwallet/tree/master/exercises/02-bip32-paths?autoresize=1&expanddevtools=1&fontsize=10&module=%2Fsrc%2FWallet.tsx"
+  title="BIP32 Paths"
+  allow="usb"
+  style="width:100%; height:850px; border:0; border-radius: 4px; overflow:hidden;"
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin">
+</iframe>
 
 ----
 

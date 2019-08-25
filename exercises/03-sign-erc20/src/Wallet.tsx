@@ -19,7 +19,7 @@ export class Wallet extends React.Component {
   trezorAdapter;
   state = {
     wallet: undefined,
-    address: undefined
+    serialized: undefined
   };
 
   constructor(props) {
@@ -48,31 +48,22 @@ export class Wallet extends React.Component {
     this.setState({ wallet });
   }
 
-  async handleShow() {
+  async handleSign() {
     if (!supportsETH(this.state.wallet)) {
       return;
     }
 
-    let wallet = this.state.wallet
+    let wallet = this.state.wallet;
 
     try {
-      let address = "Implement Me!";
+      // TODO: sign an ERC20 transaction, and extract the raw serialized tx
+      let serialized = "";
 
-      // TODO: fetch supported paths from ethGetAccountPaths
-
-      // TODO: use the 0th result, and join the contained
-      // hardenedPath and relPath arrays to form an addressNList
-
-      // TODO: request the address at that path, without showing on device
-
-      // This will show the Address & QRCode in the App:
-      this.setState({ address });
-
-      // TODO: request the address again, this time showing on device
-
+      // This will show the serialized tx in the App
+      this.setState({ serialized });
     } catch (e) {
-      console.error(e)
-      this.setState({ address: 'Oops, something went wrong' })
+      console.error(e);
+      this.setState({ address: "Oops, something went wrong" });
     }
   }
 
@@ -85,20 +76,26 @@ export class Wallet extends React.Component {
         <Button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
         </Button>
-        <hr/>
-        <Button disabled={!this.state.wallet} onClick={() => this.handleShow()}>
-          Show Address
+        <hr />
+        <Button disabled={!this.state.wallet} onClick={() => this.handleSign()}>
+          Sign Tx
         </Button>
-        <br/>
-        <br/>
-        <div hidden={this.state.address}>
-          <h4>Implement 'Show Address'</h4>
-          <p>Use the <code>TODO</code> hints in <code>Wallet.tsx</code></p>
+        <br />
+        <br />
+        <div hidden={this.state.serialized}>
+          <h4>Implement 'Sign Tx'</h4>
+          <p>
+            Use the <code>TODO</code> hints in <code>Wallet.tsx</code>
+          </p>
         </div>
-        <div hidden={!this.state.address}>
-          <QRCode value={this.state.address} size={128} includeMargin="true" />
-          <br/>
-          <span>{this.state.address}</span>
+        <div hidden={!this.state.serialized}>
+          <QRCode
+            value={this.state.serialized}
+            size={128}
+            includeMargin="true"
+          />
+          <br />
+          <span>{this.state.serialized}</span>
         </div>
       </>
     );

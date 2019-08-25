@@ -77,15 +77,15 @@ export class Wallet extends React.Component {
         <Button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
         </Button>
-        <hr />
+        <hr/>
         <Button disabled={!this.state.wallet} onClick={() => this.handleShow()}>
           Show Address
         </Button>
-        <br />
-        <br />
+        <br/>
+        <br/>
         <div hidden={!this.state.address}>
           <QRCode value={this.state.address} size={128} includeMargin="true" />
-          <br />
+          <br/>
           <span>{this.state.address}</span>
         </div>
       </>

@@ -1,6 +1,9 @@
 import * as React from "react";
 import * as debug from "debug";
 
+import Button from "react-bootstrap/Button";
+import "bootstrap/dist/css/bootstrap.css";
+
 import { Keyring } from "@shapeshiftoss/hdwallet-core";
 import { WebUSBKeepKeyAdapter } from "@shapeshiftoss/hdwallet-keepkey-webusb";
 import { TrezorAdapter } from "@shapeshiftoss/hdwallet-trezor-connect";
@@ -43,12 +46,12 @@ export class Wallet extends React.Component {
   render() {
     return (
       <>
-        <button onClick={() => this.handlePair(this.keepkeyAdapter)}>
+        <Button onClick={() => this.handlePair(this.keepkeyAdapter)}>
           Pair KeepKey
-        </button>
-        <button onClick={() => this.handlePair(this.trezorAdapter)}>
+        </Button>
+        <Button onClick={() => this.handlePair(this.trezorAdapter)}>
           Pair Trezor
-        </button>
+        </Button>
         <div hidden={!this.state.wallet}><h2>Paired! ✅</h2></div>
       </>
     );

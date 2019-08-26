@@ -27,7 +27,8 @@ let slideNo = (props) => {
                 bottom: 0,
                 margin: 16,
                 color: '#fff',
-                fontFamily: 'monospace' 
+                fontFamily: 'monospace',
+                fontSize: '25px'
             }}
             hidden={index===0}
         >

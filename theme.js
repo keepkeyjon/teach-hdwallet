@@ -26,7 +26,7 @@ let slideNo = (props) => {
                 right: 0,
                 bottom: 0,
                 margin: 16,
-                color: '#fff',
+                color: '#ccc',
                 fontFamily: 'monospace',
                 fontSize: '25px'
             }}
@@ -39,42 +39,41 @@ let slideNo = (props) => {
 
 let theme = {
     fonts: {
-      body: '"Avenir Next", system-ui, sans-serif',
-      monospace: 'Monaco, monospace'
+        body: '"Avenir Next", system-ui, sans-serif',
+        monospace: 'Monaco, monospace'
     },
     colors: {
-      text: '#fff',
-      background: '#111',
-      primary: blue,
-      black: '#000',
+        text: '#fff',
+        background: '#111',
+        primary: blue,
+        black: '#000',
     },
     fontWeights: {
-      heading: 600,
-      bold: 600,
+        heading: 600,
+        bold: 600,
     },
     text: {
-      heading: {
-        textTransform: 'uppercase',
-        letterSpacing: '0.1em',
-      },
+        heading: {
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+        },
     },
     styles: {
-      pre: {
-        color: 'primary',
-        bg: 'black',
-      },
-      code: {
-        color: 'primary',
-      },
+        pre: {
+            color: 'primary',
+            bg: 'black',
+        },
+        code: {
+            color: 'primary',
+        },
     },
     style: highlighter,
     Provider: props => slideNo(props)
-  }
+}
 
-  export default merge(theme,
-    {
-      components: {
+export default merge(theme, {
+    components: {
         pre: props => props.children,
         code: createCode(theme),
-      }
-    })
+    }
+})

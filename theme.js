@@ -7,6 +7,7 @@ import { Prism } from 'react-syntax-highlighter'
 import highlighter from 'react-syntax-highlighter/dist/esm/styles/prism/vs-dark';
 
 import { getLanguage } from '@mdx-deck/themes/syntax-highlighter'
+import { useDeck } from 'mdx-deck'
 
 export const createCode = (opts = {}) => props => {
   const language = getLanguage(props.className)
@@ -14,6 +15,26 @@ export const createCode = (opts = {}) => props => {
 }
 
 const blue = '#0af'
+
+let slideNo = (props) => {
+    const { index, length, slug } = useDeck()
+    return <div>
+        { props.children }
+        <div
+            css={{
+                position: 'fixed',
+                right: 0,
+                bottom: 0,
+                margin: 16,
+                color: '#fff',
+                fontFamily: 'monospace' 
+            }}
+            hidden={index===0}
+        >
+            { index + '/' + (length - 1) }
+        </div>
+    </div>
+}
 
 let theme = {
     fonts: {
@@ -44,13 +65,9 @@ let theme = {
       code: {
         color: 'primary',
       },
-      ul: {
-          li: {
-              code: 'red'
-          }
-      }
     },
-    style: highlighter
+    style: highlighter,
+    Provider: props => slideNo(props)
   }
 
   export default merge(theme,

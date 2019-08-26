@@ -12,6 +12,7 @@
     "@shapeshiftoss/hdwallet-trezor-connect": "0.2.0",
     "bootstrap": "4.3.1",
     "debug": "4.1.1",
+    "emotion": "^10.0.14",
     "qrcode-react": "0.1.16",
     "react": "16.8.4",
     "react-bootstrap": "1.0.0-beta.12",

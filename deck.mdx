@@ -108,8 +108,10 @@ Arrow keys to navigate.
 `} options={{ height: 1000, width: 1000 }} />
 
 <Notes>
+
 - Every vendor has their own libraries
 - Fragmented wallet support
+
 </Notes>
 
 ----
@@ -128,7 +130,9 @@ Arrow keys to navigate.
 `} options={{ height: 1000, width: 1000 }} />
 
 <Notes>
+
 - Unified api
+
 </Notes>
 
 ----
@@ -215,11 +219,13 @@ github.com/shapeshift/hdwallet
 </iframe>
 
 <Notes>
+
 - Users should try pairing a KeepKey, or a Trezor
 - May run into issues with
   - Old Firmware
   - Old Trezor Bridge versions
   - Browsers without WebUSB support
+
 </Notes>
 
 ----
@@ -315,11 +321,13 @@ let address = await wallet.ethGetAddress({
 ```
 
 <Notes>
+
 TrezorConnect api requires that we provide the address that we are expecting
 that the user see when it is shown on their device.
 
 This prevents surprises, but it also means we need to have the address before
 we can show it on the display.
+
 </Notes>
 
 ----
@@ -371,6 +379,8 @@ address = await wallet.ethGetAddress({
 
 ### Lesson: ETH Tx Signing
 
+Quiz: what does this tx do?
+
 ```javascript
 let sig = wallet.ethSignTx({
   addressNList,
@@ -388,13 +398,6 @@ let sig = wallet.ethSignTx({
 })
 ```
 
-<Notes>
-
-- What does this tx do?
-- 
-
-</Notes>
-
 ----
 
 ### Exercise 3: Sign ERC20 Tx
@@ -409,11 +412,108 @@ let sig = wallet.ethSignTx({
 
 ----
 
+### Lesson: Message Signing
+
+<Appear>
+
+```javascript
+signDigest(hash(message), key)
+```
+
+<div>
+
+<div style="text-align: center">vs</div>
+
+```javascript
+signDigest(hash("\x19Ethereum Signed Message:\n" + message), key)
+```
+
+</div>
+
+</Appear>
+
+<Notes>
+
+"Personal" message signing gets prefixed with a string to distinguish it from
+transaction signing. This helps protect users from signing malicious payloads
+that take all their funds, or other funny business.
+
+</Notes>
+
+----
+
+### Lesson: Message Sign & Verify
+
+```javascript
+let res = await wallet.ethSignMessage({
+  addressNList: bip32ToAddressNList("m/44'/60'/0'/0/0"),
+  message: 'Hello World'
+})
+```
+
+```javascript
+let res = await wallet.ethVerifyMessage({
+  address: '0x3f2329C9ADFbcCd9A84f52c906E936A42dA18CB8',
+  message: 'Hello World',
+  signature: '0x29f7212ecc1c76cea81174af267b67506' +
+               'f754ea8c73f144afa900a0d85b24b2131' +
+               '9621aeb062903e856352f383057101908' +
+               '69c3ce5a1425d65ef4fa558d0fc251b'
+})
+```
+
+<Notes>
+
+KeepKey doesn't have font support for emojis, so you won't be able to see
+them when you sign them (you'll see a sadface instead)... But plain old ASCII
+will work, up to a size limit.
+
+</Notes>
+
+----
+
+### Lesson: UTXO Receive Address
+
+```javascript
+if (!supportsBTC(wallet))
+  return
+
+if (!wallet.btcSupportsCoin('Litecoin'))
+  return
+
+// Same "Ask Twice" pattern as on ETH
+let address = await wallet.btcGetAddress({
+  addressNList,
+  coin: 'Litecoin',
+  showDisplay: false,
+  scriptType: BTCInputScriptType.SpendWitness, // p2wpkh, bech32
+})
+```
+
+<Notes>
+
+Alternatively, fetch the account's xpub using `wallet.getPublicKeys(...)`,
+and derive the address yourself, then make the request with `showDisplay: true`.
+
+</Notes>
+
+----
+
+### Lesson: UTXO Signing
+
+- Much more involved than for ETH signing
+- No UTXO selection in HDWallet
+- Need to provide full prevTx for legacy UTXOs
+  - Allows devices to verify amounts add up
+
+----
+
 ### Exercise N: Take Home
 
 - Ideas
   1. Add Ledger support
   1. Add UI for BIP39 Passphrases
+  1. Add Sign & Verify message support
 
 ----
 

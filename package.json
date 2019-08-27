@@ -10,7 +10,8 @@
     "mdx-deck": "^3.0.9"
   },
   "scripts": {
-    "start": "mdx-deck deck.mdx"
+    "start": "mdx-deck deck.mdx",
+    "pdf": "npx website-pdf http://localhost:8000//print -o deck.pdf"
   },
   "dependencies": {
     "@mdx-deck/themes": "^3.0.8",

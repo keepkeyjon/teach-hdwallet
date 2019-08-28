@@ -390,7 +390,7 @@ address = await wallet.ethGetAddress({
 Quiz: what does this tx do?
 
 ```javascript
-let sig = wallet.ethSignTx({
+let sig = await wallet.ethSignTx({
   addressNList,
   nonce: '0x01',
   gasPrice: "0x1dcd65000",

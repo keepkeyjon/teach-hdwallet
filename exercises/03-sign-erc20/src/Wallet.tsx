@@ -77,6 +77,17 @@ export class Wallet extends React.Component {
     this.setState({ wallet });
   }
 
+  ethAccountPath(wallet, accountIdx) {
+    let paths = wallet.ethGetAccountPaths({
+      coin: 'Ethereum',
+      accountIdx
+    })
+
+    let path = paths[0]
+
+    return path.hardenedPath.concat(path.relPath)
+  }
+
   async handleSign() {
     if (!supportsETH(this.state.wallet)) {
       return;
@@ -85,11 +96,27 @@ export class Wallet extends React.Component {
     let wallet = this.state.wallet;
 
     try {
-      // TODO: sign an ERC20 transaction, and extract the raw serialized tx
-      let serialized = "";
+      let addressNList = this.ethAccountPath(wallet, 1)
 
-      // This will show the serialized tx in the App
-      this.setState({ serialized });
+      // TODO: sign an ERC20 transaction, and extract the raw serialized tx
+      let sig = await wallet.ethSignTx({
+        addressNList,
+      //  nonce: '0x01',
+      //  gasPrice: "0x1dcd65000",
+      //  gasLimit: "0x5622",
+      //  value: '0x',
+      //  to: '0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d',
+      //  chainId: 1,
+      //  data: '0xa9059cbb' +
+      //    '000000000000000000000000' +
+      //    '73d0385F4d8E00C5e6504C6030F47BF6212736A8' +
+      //    '0000000000000000000000000000000000000000000000' +
+      //    '487A9A304539440000'
+      })
+
+      // This will show the serialized tx in the App,
+      // but does not broadcast it.
+      this.setState({ serialized: sig.serialized });
     } catch (e) {
       console.error(e);
       this.setState({ address: "Oops, something went wrong" });

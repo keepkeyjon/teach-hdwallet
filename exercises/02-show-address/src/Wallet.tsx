@@ -80,19 +80,27 @@ export class Wallet extends React.Component {
     let wallet = this.state.wallet;
 
     try {
-      let address = "Implement Me!";
-
       // TODO: fetch supported paths from ethGetAccountPaths
+      let paths = wallet.ethGetAccountPaths({
+        // hint: need to pass which coin, and which account index.
+      })
 
       // TODO: use the 0th result, and join the contained
       // hardenedPath and relPath arrays to form an addressNList
+      let addressNList = []
 
       // TODO: request the address at that path, without showing on device
+      let address = await wallet.ethGetAddress({
+        // hint: showDisplay: false, among other things
+      })
 
       // This will show the Address & QRCode in the App:
       this.setState({ address });
 
       // TODO: request the address again, this time showing on device
+      await wallet.ethGetAddress({
+        // hint: showDisplay: true, among other things
+      })
     } catch (e) {
       console.error(e);
       this.setState({ address: "Oops, something went wrong" });

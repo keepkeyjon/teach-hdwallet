@@ -17,7 +17,7 @@ export const createCode = (opts = {}) => props => {
 const blue = '#0af'
 
 let slideNo = (props) => {
-    const { index, length, slug } = useDeck()
+    const { index, length } = useDeck()
     return <div>
         { props.children }
         <div
